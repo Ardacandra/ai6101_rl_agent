@@ -64,9 +64,23 @@ class RLAgent:
             state = self.env.reset()
             done = False
             while not done: # Run until game terminated
-                raise NotImplementedError
-                # TODO: Update Q-values
+                ### ASSIGNMENT START
 
+                #Applying Q-Learning Algorithm
+
+                #choose A from S using policy derived from Q
+                action = self.act(state, is_training=True)
+                #take action A, observe R and S', update cumulative reward
+                next_state, reward, done, info = self.env.step(action)
+                #update Q(S, A)
+                q_original = self.q_table[state][action]
+                q_next_state = self.q_table[next_state][self.act(next_state, is_training=True)]
+                self.q_table[state][action] = q_original + self.alpha * (reward + (self.epsilon * q_next_state) - q_original)
+                #update cumulative reward and current state
+                cumulative_reward += reward
+                state = next_state
+
+                ### ASSIGNMENT END
             rewards.append(cumulative_reward)
 
         return rewards
