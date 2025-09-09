@@ -49,5 +49,5 @@ def plot_state_grid(world_state, val_to_int, cmap, title, output_path):
             plt.text(j, i, world_state[i][j], ha="center", va="center", color="black", fontsize=14)
     
     plt.title(title)
-    plt.savefig(output_path)
+    plt.savefig(output_path, bbox_inches="tight")
     plt.close()
