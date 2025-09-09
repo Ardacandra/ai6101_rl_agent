@@ -74,8 +74,8 @@ class RLAgent:
                 next_state, reward, done, info = self.env.step(action)
                 #update Q(S, A)
                 q_original = self.q_table[state][action]
-                q_next_state = self.q_table[next_state][self.act(next_state, is_training=True)]
-                self.q_table[state][action] = q_original + self.alpha * (reward + (self.epsilon * q_next_state) - q_original)
+                q_next_state = max(self.q_table[next_state].values())
+                self.q_table[state][action] = q_original + self.alpha * (reward + (self.gamma * q_next_state) - q_original)
                 #update cumulative reward and current state
                 cumulative_reward += reward
                 state = next_state
