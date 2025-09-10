@@ -35,6 +35,7 @@ class CliffBoxGridWorld:
     def __init__(self,
                  episode_length=100,
                  render=False,
+                 sparse_reward=False,
                  ):
         """
         The grid world looks like:
@@ -52,6 +53,7 @@ class CliffBoxGridWorld:
         self.render = render
         self.agent_pos = self.init_agent_pos
         self.box_pos = self.init_box_pos
+        self.sparse_reward = sparse_reward # Additional parameter for sparse reward setting
 
         # Visualization.
         if self.render:
@@ -104,22 +106,33 @@ class CliffBoxGridWorld:
             self.agent_pos = new_agent_pos
         state = tuple([*self.agent_pos.tolist(), *self.box_pos.tolist()])
 
-        # Calculate the rewards
         done = self.timesteps == self.episode_length - 1
-        # the distance between agents and box
-        dist = np.sum(np.abs(self.agent_pos - self.box_pos))
-        reward = -1  # -1 for each step
-        reward -= dist
-        # if agents or box is off the cliff
-        if self._check_off_cliff(self.agent_pos) or self._check_off_cliff(self.box_pos):
-            reward += -1000
-            done = True
-        
-        if all(self.box_pos == self.goal_pos):
-            reward += 1000
-            done = True
-        
-        reward -= np.sum(np.abs(self.box_pos - self.goal_pos))
+        reward = 0
+        # Calculate the rewards
+        if not self.sparse_reward:
+            # the distance between agents and box
+            dist = np.sum(np.abs(self.agent_pos - self.box_pos))
+            reward = -1  # -1 for each step
+            reward -= dist
+            # if agents or box is off the cliff
+            if self._check_off_cliff(self.agent_pos) or self._check_off_cliff(self.box_pos):
+                reward += -1000
+                done = True
+            
+            if all(self.box_pos == self.goal_pos):
+                reward += 1000
+                done = True
+            
+            reward -= np.sum(np.abs(self.box_pos - self.goal_pos))
+        else:
+            ### ASSIGNMENT START
+
+            # Sparse reward setting
+            if all(self.box_pos == self.goal_pos):
+                reward += 1000
+                done = True
+
+            ### ASSIGNMENT END 
 
         if self.render:
             self._update_render()
