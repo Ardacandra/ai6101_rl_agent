@@ -136,7 +136,7 @@ class RLAgent:
                     #choose A from S using policy derived from Q
                     action = self.act(state, is_training=True)
 
-                    #take action A, observe R and S', update cumulative reward
+                    #take action A, observe R and S'
                     next_state, reward, done, info = self.env.step(action)
 
                     #update Q(S, A)
