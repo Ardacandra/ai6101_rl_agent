@@ -128,6 +128,9 @@ class CliffBoxGridWorld:
             ### ASSIGNMENT START
 
             # Sparse reward setting
+            if self._check_off_cliff(self.agent_pos) or self._check_off_cliff(self.box_pos):
+                done = True
+
             if all(self.box_pos == self.goal_pos):
                 reward += 1000
                 done = True
